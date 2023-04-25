@@ -1,0 +1,51 @@
+package com.login.login.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@AllArgsConstructor
+@Data
+@Entity
+@Table (name = "users" , uniqueConstraints ={ @UniqueConstraint (columnNames = {"username"}),
+        @UniqueConstraint(columnNames ={ "email"}) })
+public class User  {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(name= "first_name")
+    private String FirstName;
+    @Column(name = "last_name")
+    private String LastName;
+    @Column(name = "email")
+    private  String email;
+    @Column(name = "username")
+    private String  username;
+    @Column(name="password")
+    private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<> ();
+
+
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+    public User( String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User() {
+    }
+}
